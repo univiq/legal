@@ -1,72 +1,33 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UNIVIQ — Connexion</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirection UNIVIQ…</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #08080f;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      text-align: center;
-      padding: 24px;
-    }
-    .card {
-      max-width: 360px;
-      gap: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .emoji { font-size: 48px; }
-    h1 { font-size: 22px; font-weight: 800; }
-    p  { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.5; }
-    .dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: #ff6b2b;
-      animation: pulse 1s ease-in-out infinite;
-      display: inline-block;
-      margin-right: 6px;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.4; transform: scale(0.8); }
-    }
+    body { font-family: -apple-system, sans-serif; display: flex; align-items: center;
+           justify-content: center; min-height: 100vh; margin: 0; background: #0a0a0f; color: #fff; }
+    p { opacity: 0.6; font-size: 15px; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="emoji">⚡</div>
-    <h1>UNIVIQ</h1>
-    <p><span class="dot"></span>Retour vers l'application…</p>
-    <p style="font-size:12px">Tu peux fermer cette page si elle ne se ferme pas automatiquement.</p>
-  </div>
-
+  <p>Retour vers UNIVIQ…</p>
   <script>
-    // Redirige vers l'app via le scheme univiq://
-    // expo-web-browser intercepte cette URL sur iOS avant même le chargement de la page.
-    // Ce script est un fallback pour Android / navigateurs externes.
-    (function () {
-      const params = new URLSearchParams(window.location.search);
-      const code   = params.get('code');
-      const state  = params.get('state');
-      const error  = params.get('error');
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var code   = params.get('code');
+    var state  = params.get('state');
+    var error  = params.get('error');
 
-      if (code) {
-        const deepLink = 'univiq://auth/tiktok?code=' + encodeURIComponent(code)
-          + '&state=' + encodeURIComponent(state || '');
-        window.location.href = deepLink;
-      } else if (error) {
-        const deepLink = 'univiq://auth/tiktok?error=' + encodeURIComponent(error);
-        window.location.href = deepLink;
-      }
-    })();
+    if (code) {
+      window.location.href = 'univiq://auth/tiktok'
+        + '?code='  + encodeURIComponent(code)
+        + '&state=' + encodeURIComponent(state || '');
+    } else if (error) {
+      window.location.href = 'univiq://auth/tiktok'
+        + '?error=' + encodeURIComponent(error);
+    }
+  })();
   </script>
 </body>
 </html>
