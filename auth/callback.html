@@ -3,29 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Redirection UNIVIQ…</title>
+  <title>UNIVIQ</title>
   <style>
-    body { font-family: -apple-system, sans-serif; display: flex; align-items: center;
-           justify-content: center; min-height: 100vh; margin: 0; background: #0a0a0f; color: #fff; }
-    p { opacity: 0.6; font-size: 15px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, sans-serif;
+      background: #08080f; color: #fff;
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 24px; gap: 20px;
+    }
+    .emoji { font-size: 52px; }
+    h1  { font-size: 22px; font-weight: 800; }
+    p   { font-size: 15px; color: rgba(255,255,255,0.55); text-align: center; line-height: 1.5; }
+    .btn {
+      display: block; width: 100%; max-width: 320px; padding: 18px;
+      border-radius: 16px; background: linear-gradient(90deg, #ff6b2b, #ff0050);
+      color: #fff; font-size: 17px; font-weight: 900;
+      text-align: center; text-decoration: none; margin-top: 8px;
+    }
+    .hint { font-size: 12px; color: rgba(255,255,255,0.25); }
   </style>
 </head>
 <body>
-  <p>Retour vers UNIVIQ…</p>
+  <div class="emoji">🎭</div>
+  <h1 id="title">Connexion réussie !</h1>
+  <p id="msg">Tape le bouton pour revenir dans UNIVIQ.</p>
+  <a id="btn" class="btn" href="#">↩ Retour à UNIVIQ</a>
+  <p class="hint" id="hint"></p>
+
   <script>
   (function () {
     var params = new URLSearchParams(window.location.search);
     var code   = params.get('code');
     var state  = params.get('state');
     var error  = params.get('error');
+    var btn    = document.getElementById('btn');
 
     if (code) {
-      window.location.href = 'univiq://auth/tiktok'
+      var deepLink = 'univiq://auth/tiktok'
         + '?code='  + encodeURIComponent(code)
         + '&state=' + encodeURIComponent(state || '');
+      btn.href = deepLink;
+      document.getElementById('hint').textContent = 'code reçu ✓';
+      // Tentative auto-redirect (marche hors WebView TikTok)
+      try { window.location.href = deepLink; } catch(e) {}
     } else if (error) {
-      window.location.href = 'univiq://auth/tiktok'
-        + '?error=' + encodeURIComponent(error);
+      var errLink = 'univiq://auth/tiktok?error=' + encodeURIComponent(error);
+      btn.href = errLink;
+      document.getElementById('title').textContent = 'Erreur de connexion';
+      document.getElementById('msg').textContent = 'Retourne dans UNIVIQ pour réessayer.';
+      document.getElementById('hint').textContent = 'error: ' + error;
+      try { window.location.href = errLink; } catch(e) {}
+    } else {
+      btn.style.display = 'none';
+      document.getElementById('title').textContent = 'Page de callback';
+      document.getElementById('msg').textContent = 'Aucun paramètre reçu.';
     }
   })();
   </script>
